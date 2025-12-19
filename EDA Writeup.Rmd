@@ -1,0 +1,23 @@
+---
+title: "EDA Writeup"
+author: "Ahmad Alshikh Menou, Risha Baid"
+date: "2025-12-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Exploratory Data Analysis (EDA)
+
+The exploratory data analysis begins by defining the company universe and ensuring the dataset is coherent before any modeling takes place. We pull an S&P 500 constituents table from DataHub, restrict the sample to five target sectors, and then use Yahoo Finance market capitalization data to select the top two companies within each sector. This results in a fixed universe of ten large-cap firms across Technology, Communication Services, Consumer Discretionary, Health Care, and Financials. The motivation for this choice is to keep the dataset focused and comparable across sectors while using companies with reliable transcript coverage and sufficient trading liquidity.
+
+After defining the universe, we collect earnings call transcript metadata using the transcripts API. We standardize the report date field and limit the sample to the last ten fiscal years to keep the analysis recent and relevant. Duplicate records at the symbol, fiscal year, and fiscal quarter level are removed so that each earnings event appears only once. For each event, we then fetch the full transcript text and combine it into a single cleaned text field called `content_full`. This step produces an event-level text dataset in which each row corresponds to one company’s earnings call for a specific quarter.
+
+Next, we perform basic text quality checks and construct baseline language features. Missing or empty transcripts are handled safely so that the pipeline does not break. We split the transcript text into sentences, filter out extremely short sentences, and compute sentence-level VADER sentiment scores. These sentence-level scores are then aggregated into event-level features. The main sentiment features include the average VADER sentiment score (`vader_mean`), the share of positive, negative, and neutral sentences, and an average sentence length metric. This stage of EDA is important because it verifies that the text is usable, that sentiment features behave sensibly, and that there is meaningful variation across events.
+
+We then link each earnings event to realized market outcomes. Using Yahoo Finance adjusted price data, we download daily prices for all sample tickers as well as SPY, which serves as a market benchmark. For each earnings date, we compute post-event stock returns over one-day, three-day, and five-day windows, measured relative to the trading day before the event. We compute the benchmark return over the same five-day window and define CAR5 as the stock’s five-day return minus the benchmark’s five-day return. This abnormal return measure isolates company-specific performance rather than broad market movement. We also compute a simple volume change measure from the day before the event to the event day to capture whether earnings calls are associated with unusual trading activity.
+
+Finally, we merge all components into a single modeling table. The combined dataset, `df_big`, contains firm identifiers and metadata such as symbol, company name, sector, industry, and market capitalization, along with transcript information including fiscal year, fiscal quarter, transcript identifiers, and the full cleaned text. It also includes the VADER sentiment features and market outcome variables such as returns and CAR5. After merging and organizing columns, the final dataset contains 353 event-level observations and 23 columns. This count is slightly below the theoretical maximum for ten firms over ten years of quarterly events, which is expected because not every firm has a usable transcript for every quarter and some event dates do not align cleanly with trading days.
+
+The main takeaway from the EDA is that we successfully construct a clean event-level dataset that consistently links financial text to short-horizon market reactions. At the same time, the structure of the data highlights the difficulty of the predictive task. The target variable is a short-window abnormal return, which is inherently noisy, and the sample size is modest once we restrict attention to a small set of firms and a strict event definition. These observations motivate the modeling choices in later sections, including careful out-of-sample evaluation, the use of baseline models, and cautious interpretation of predicted probabilities when benchmarking against realized market outcomes.
