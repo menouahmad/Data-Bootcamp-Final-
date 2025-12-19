@@ -30,7 +30,7 @@ The confusion matrix complements the ROC curve by showing how the model behaves 
 <img width="755" height="384" alt="Confusion matrix" src="https://github.com/user-attachments/assets/e7846e01-716b-4660-a449-acaafe4d0c4b" />
 
 
-The predicted probability histogram checks whether the model produces meaningfully different probability distributions for events that truly ended up up versus events that truly ended up down. A strong model would place most up events at high probabilities and most down events at low probabilities, creating visible separation. In our results, the distributions overlap heavily and many predictions cluster near 0.5, which suggests the model is not confident and not strongly discriminative for CAR5 direction. Place the probability histogram figure here.
+The predicted probability histogram checks whether the model produces meaningfully different probability distributions for events that truly ended up up versus events that truly ended up down. A strong model would place most up events at high probabilities and most down events at low probabilities, creating visible separation. In our results, the distributions overlap heavily and many predictions cluster near 0.5, which suggests the model is not confident and not strongly discriminative for CAR5 direction.
 
 <img width="606" height="384" alt="download (1)" src="https://github.com/user-attachments/assets/38598061-5e19-4da9-8052-e3886bbcecc7" />
 
@@ -38,7 +38,7 @@ We then connect predictions to realized returns more directly using a decile sor
 
 To provide an intuitive market facing summary, we also compute cumulative event level performance under simple rules. The baseline takes every event CAR5, the long only rule takes CAR5 only when the model predicts up, and the long short rule goes long when the model predicts up and short when the model predicts down. This is not a full trading backtest, but it shows whether the model would have improved outcomes relative to a simple baseline when returns are compounded across events. In our results, the model based curves do not consistently outperform the baseline, and the long short approach can be unstable when direction accuracy is weak. 
 
-Finally, we examine whether performance differs by sector by computing accuracy within each sector group. This helps interpret where the sentiment to market relationship might be more consistent and where it might be weaker. Sector results should be interpreted cautiously, especially when sector counts are small, because small samples can make accuracy appear artificially high or low. Place the sector accuracy figure here.
+Finally, we examine whether performance differs by sector by computing accuracy within each sector group. This helps interpret where the sentiment to market relationship might be more consistent and where it might be weaker. Sector results should be interpreted cautiously, especially when sector counts are small, because small samples can make accuracy appear artificially high or low.
 
 <img width="984" height="384" alt="download (2)" src="https://github.com/user-attachments/assets/21fe64cc-2e78-4ec7-94f4-10c5cdf0f5e4" />
 
